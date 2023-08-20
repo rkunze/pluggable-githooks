@@ -25,14 +25,11 @@ esac
 FINAL_STATUS=0
 for HOOK in .git/hooks/$TRIGGER .githooks/${TRIGGER}.d/* ; do
     if test -x $HOOK; then
-        echo trying $HOOK ...
         if ! $HOOK "$@"; then
             STATUS=$?
             if test "$ABORT_ON_FAIL" = "true" ; then
-                echo ... abort
                 exit $STATUS
             else
-                echo ... continue despite error
                 FINAL_STATUS=$STATUS
             fi
         fi
