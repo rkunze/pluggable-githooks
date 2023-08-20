@@ -27,11 +27,11 @@ See [How it works](#how-it-works) for details on how _pluggable-githooks_ will r
 
 The initial setup installs a set of generic hook scripts provided by _pluggable-githooks_ in the `.githooks` directory of your repository. As the directory is managed und version controlled within _your_ project, this needs only be done once — every later clone of your repository will automatically get the `.githooks` directory.
 
-1. Add this repository as a remote to your project. I suggest to use that name `.githooks` as the name for the remote, but you can choose any name you want.
+1. Add this repository as a remote to your project. I suggest to use that name `pluggable-githooks` as the name for the remote, but you can choose any name you want.
 
 2. Pull the desired implementation into your project. Here I use `impl/sh` to get the most recent version of the posix shell implementation:
    ~~~
-   git pull .githooks impl/sh
+   git pull pluggable-githooks impl/sh
    ~~~
    Note: **Never** pull from anything but one of the `impl/*` branches here — doing so will clobber your project with unwanted stuff (amongst others this `README.md` file).
 
