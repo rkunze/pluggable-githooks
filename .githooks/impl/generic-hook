@@ -1,0 +1,41 @@
+#!/bin/sh
+# Copyright © 2023 Richard Kunze <richard.kunze@mailbox.org>.
+# SPDX-License-Identifier: MIT
+
+# find out which hook should be run
+TRIGGER=$(basename $0)
+
+# figure out if we should abort immediatley if a hook module
+# returns a nonzero exit status
+case $TRIGGER in
+    post-applypatch) ABORT_ON_FAIL=false;;
+    post-commit) ABORT_ON_FAIL=false;;
+    post-checkout) ABORT_ON_FAIL=false;;
+    post-merge) ABORT_ON_FAIL=false;;
+    post-receive) ABORT_ON_FAIL=false;;
+    post-update) ABORT_ON_FAIL=false;;
+    reference-transaction) ABORT_ON_FAIL=false;;
+    post-rewrite) ABORT_ON_FAIL=false;;
+    p4-post-changelist) ABORT_ON_FAIL=false;;
+    *) ABORT_ON_FAIL=true;;
+esac
+
+# actually run the hooks, including the standard hook in
+# .git/hooks if it exists which is always run first
+FINAL_STATUS=0
+for HOOK in .git/hooks/$TRIGGER .githooks/${TRIGGER}.d/* ; do
+    if test -x $HOOK; then
+        echo trying $HOOK ...
+        if ! $HOOK "$@"; then
+            STATUS=$?
+            if test "$ABORT_ON_FAIL" = "true" ; then
+                echo ... abort
+                exit $STATUS
+            else
+                echo ... continue despite error
+                FINAL_STATUS=$STATUS
+            fi
+        fi
+    fi
+done
+exit $FINAL_STATUS
